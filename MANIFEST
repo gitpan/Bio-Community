@@ -32,8 +32,6 @@ lib/Bio/Community/Types.pm
 lib/Bio/Root/IO.pm
 LICENSE
 MANIFEST			This list of files
-META.json
-META.yml
 README
 scripts/bc_clean_shrapnel
 scripts/bc_convert_files
@@ -112,3 +110,5 @@ t/Tools/Sampler.t
 t/Tools/ShrapnelCleaner.t
 t/Tools/Summarizer.t
 t/Tools/Transformer.t
+META.yml
+META.json

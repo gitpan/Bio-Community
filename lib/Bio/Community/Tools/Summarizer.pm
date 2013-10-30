@@ -418,27 +418,26 @@ method _group_by_relative_abundance ( $meta, $params ) {
       }
       for my $rel_ab (@$rel_abs) {
          if ( not &$cmp($rel_ab, $thresh) ) {
-            # Do not put this guy in a group
-            $member_to_group--;
+            $member_to_group--; # This member needs no grouping
             last;
          }
       }
 
-      my $i = -1;
+      my $i = 0;
       while (my $community = $meta->next_community) {
-         $i++;
          my $rel_ab = $rel_abs->[$i];
          my $count  = $community->get_count($member);
-         if ($member_to_group) {
-            # Will group member
-            my $wcount = $count / Bio::Community::_prod($member->weights);
-            $taxa_counts->{$desc}->{$i}->[0] += $count;
-            $taxa_counts->{$desc}->{$i}->[1] += $wcount;
-         } else {
-            # Add member as-is, ungrouped
-            my $summary = $summary->get_community_by_name($community->name);
-            $summary->add_member($member, $count) if $count > 0;
+         if ($count > 0) {
+            if ($member_to_group) {
+               # Will group member
+               $taxa_counts->{$desc}->{$i}->[0] += $count; # count
+               $taxa_counts->{$desc}->{$i}->[1] += $count / Bio::Community::_prod($member->weights); # weighted count
+            } else {
+               # Add member as-is, ungrouped
+               $summary->get_community_by_name($community->name)->add_member($member, $count);
+            }
          }
+         $i++;
       }
 
    }
@@ -456,42 +455,34 @@ method _calc_weights ($count, $weighted_count) {
    return [ $weight ];
 }
 
-
 method _add_groups ($taxa_objs, $taxa_counts, $summary, $use_desc = 0) {
-   # Add taxonomic groups to the summary metacommunity provided
+   # Add groups to the summary metacommunity provided
    while (my ($lineage_str, $taxon) = each %$taxa_objs) {
-      my $group_id;
-      my $i = -1;
+      # Make a group template
+      my $group_template = Bio::Community::Member->new( );
+      if ($use_desc) {
+         $group_template->desc($taxon);
+         #### TODO: Need to make taxonomy. Ideally instead of re-making it, it should not be lost.
+         #use Bio::Community::TaxonomyUtils qw(split_lineage_string);
+         #my @names = @{split_lineage_string($lineage_str)};
+         #my $taxonomy = $tax_obj->db_handle;
+         #my $tax_obj = $self->taxonomy->get_taxon( -names => \@names );
+         #$group_template->taxon($tax_obj);
+      } else {
+         $group_template->desc($lineage_str);
+         if ($taxon) {
+            $group_template->taxon($taxon);
+         }
+      }
+      # Make a group based on the template and add it to each community
+      my $i = 0;
       while (my $summary = $summary->next_community) {
-         $i++;
          my $count_info = $taxa_counts->{$lineage_str}->{$i} || next;
          my ($count, $wcount) = @{$count_info};
-         my $group;
-         if ($group_id) {
-            $group = Bio::Community::Member->new( -id => $group_id );
-         } else {
-            $group = Bio::Community::Member->new( );
-            $group_id = $group->id;
-         }
-         if ($use_desc) {
-            $group->desc($taxon);
-
-            #### Need to make taxonomy. Ideally instead of re-making it, it should not be lost.
-            ##use Bio::Community::TaxonomyUtils qw(split_lineage_string);
-            ##my @names = @{split_lineage_string($lineage_str)};
-            ##my $taxonomy = $tax_obj->db_handle;
-            ##my $tax_obj = $self->taxonomy->get_taxon( -names => \@names );
-            ##$group->taxon($tax_obj);
-            ####
-
-         } else {
-            $group->desc($lineage_str);
-            if ($taxon) {
-               $group->taxon($taxon);
-            }
-         }
+         my $group = $group_template->clone;
          $group->weights( $self->_calc_weights($count, $wcount) );
          $summary->add_member($group, $count) if $count > 0;
+         $i++;
       }
    }
    return 1;

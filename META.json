@@ -50,7 +50,7 @@
    "provides" : {
       "Bio::Community" : {
          "file" : "lib/Bio/Community.pm",
-         "version" : "0.001000003"
+         "version" : "0.001000_003"
       },
       "Bio::Community::Alpha" : {
          "file" : "lib/Bio/Community/Alpha.pm"
@@ -141,7 +141,7 @@
          "version" : "1.70"
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
          "web" : "https://redmine.open-bio.org/projects/bioperl/"
@@ -154,5 +154,5 @@
          "url" : "git://github.com/bioperl/Bio-Community.git"
       }
    },
-   "version" : "0.001000003"
+   "version" : "0.001000_003"
 }
