@@ -18,6 +18,7 @@ lib/Bio/Community/Role/Classified.pm
 lib/Bio/Community/Role/Described.pm
 lib/Bio/Community/Role/IO.pm
 lib/Bio/Community/Role/Locked.pm
+lib/Bio/Community/Role/PRNG.pm
 lib/Bio/Community/Role/Sequenced.pm
 lib/Bio/Community/Role/Table.pm
 lib/Bio/Community/Role/Weighted.pm
@@ -29,9 +30,10 @@ lib/Bio/Community/Tools/ShrapnelCleaner.pm
 lib/Bio/Community/Tools/Summarizer.pm
 lib/Bio/Community/Tools/Transformer.pm
 lib/Bio/Community/Types.pm
-lib/Bio/Root/IO.pm
 LICENSE
 MANIFEST			This list of files
+META.json
+META.yml
 README
 scripts/bc_clean_shrapnel
 scripts/bc_convert_files
@@ -101,8 +103,10 @@ t/Meta.t
 t/Meta/Beta.t
 t/Meta/Gamma.t
 t/Role/Locked.t
+t/Role/PRNG.t
 t/Role/Table.t
 t/Role/TestLocked.pm
+t/Role/TestPRNG.pm
 t/Role/TestTable.pm
 t/Tools/Rarefier.t
 t/Tools/RepresentativeIdConverter.t
@@ -110,5 +114,3 @@ t/Tools/Sampler.t
 t/Tools/ShrapnelCleaner.t
 t/Tools/Summarizer.t
 t/Tools/Transformer.t
-META.yml
-META.json

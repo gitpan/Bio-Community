@@ -16,7 +16,7 @@ name: Bio-Community
 provides:
   Bio::Community:
     file: lib/Bio/Community.pm
-    version: 0.001000_003
+    version: 0.001000
   Bio::Community::Alpha:
     file: lib/Bio/Community/Alpha.pm
   Bio::Community::IO:
@@ -51,6 +51,8 @@ provides:
     file: lib/Bio/Community/Role/IO.pm
   Bio::Community::Role::Locked:
     file: lib/Bio/Community/Role/Locked.pm
+  Bio::Community::Role::PRNG:
+    file: lib/Bio/Community/Role/PRNG.pm
   Bio::Community::Role::Sequenced:
     file: lib/Bio/Community/Role/Sequenced.pm
   Bio::Community::Role::Table:
@@ -73,19 +75,17 @@ provides:
     file: lib/Bio/Community/Tools/Transformer.pm
   Bio::Community::Types:
     file: lib/Bio/Community/Types.pm
-  Bio::Root::IO:
-    file: lib/Bio/Root/IO.pm
-    version: 1.70
 recommends:
   Math::BigInt::GMP: 0
 requires:
-  Bio::Root::Version: 1.006910
+  Bio::Root::Version: 1.006923
   DateTime: 0
   Getopt::Euclid: v0.4.3
   Hash::Util: 0
   JSON::XS: 0
   Math::Random::MT: 0
   Method::Signatures: 0
+  Module::Runtime: 0
   Moose: 0
   MooseX::NonMoose: 0
   MooseX::StrictConstructor: 0
@@ -99,4 +99,4 @@ resources:
   homepage: http://www.bioperl.org
   license: http://dev.perl.org/licenses/
   repository: git://github.com/bioperl/Bio-Community.git
-version: 0.001000_003
+version: 0.001000

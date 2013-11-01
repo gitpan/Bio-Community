@@ -64,6 +64,7 @@ methods. Internal methods are usually preceded with a _
  Function: Create a new Bio::Community::Tool::Sampler object
  Usage   : my $sampler = Bio::Community::Tool::Sampler->new( );
  Args    : -community: See community().
+           -seed     : See set_seed().
  Returns : a new Bio::Community::Tools::Sampler object
 
 =cut
@@ -76,19 +77,10 @@ use MooseX::NonMoose;
 use MooseX::StrictConstructor;
 use Method::Signatures;
 use namespace::autoclean;
-use List::Util qw( first );
 use Bio::Community;
-use Math::Random::MT qw(srand rand);
 
 extends 'Bio::Root::Root';
-
-
-method BUILD ($args) {
-   # Prepare the CDF that we will be sampling from after new()
-   my ($cdf, $members) = $self->_calc_cdf();
-   $self->_cdf( $cdf );
-   $self->_members( $members );
-}
+with 'Bio::Community::Role::PRNG';
 
 
 =head2 community
@@ -113,7 +105,7 @@ has _cdf => (
    is => 'rw',
    isa => 'ArrayRef', # ArrayRef[PositiveNum]
    lazy => 1,
-   default => sub{ [] },
+   default => sub { shift->_init_cdf( ) },
    init_arg => undef,
 );
 
@@ -127,6 +119,16 @@ has _members => (
 );
 
 
+=head2 get_seed, set_seed
+
+ Usage   : $sampler->set_seed(1234513451);
+ Function: Get or set the seed used to pick the random members.
+ Args    : Positive integer
+ Returns : Positive integer
+
+=cut
+
+
 =head2 get_rand_member
 
  Function: Get a random member from a community (sample with replacement).
@@ -138,7 +140,7 @@ has _members => (
 
 method get_rand_member () {
    # Pick a random member based on the community's cdf
-   my $rand_pick = rand();
+   my $rand_pick = $self->rand();
    my $cdf = $self->_cdf;
    my $index = 0;
    while (1) {
@@ -183,9 +185,10 @@ method get_rand_community ( StrictlyPositiveInt $total_count = 1 ) {
 }
 
 
-method _calc_cdf () {
+method _init_cdf () {
    # Sort the members of the community by decreasing rank and calculate the
-   # cumulative density function of their relative abundance
+   # cumulative density function of their relative abundance. Store the
+   # resulting CDF and members;
    my $community = $self->community;
 
    my @cdf;
@@ -201,7 +204,9 @@ method _calc_cdf () {
       $cdf[$i] += $cdf[$i-1];
    }
 
-   return \@cdf, \@members;
+   $self->_cdf( \@cdf );
+   $self->_members( \@members );
+   return \@cdf;
 }
 
 
