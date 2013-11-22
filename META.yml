@@ -7,7 +7,7 @@ build_requires:
 configure_requires:
   Module::Build: 0.40
 dynamic_config: 1
-generated_by: 'Module::Build version 0.4007, CPAN::Meta::Converter version 2.132830'
+generated_by: 'Module::Build version 0.4008, CPAN::Meta::Converter version 2.132830'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -16,7 +16,7 @@ name: Bio-Community
 provides:
   Bio::Community:
     file: lib/Bio/Community.pm
-    version: 0.001000
+    version: 0.001001
   Bio::Community::Alpha:
     file: lib/Bio/Community/Alpha.pm
   Bio::Community::IO:
@@ -78,7 +78,7 @@ provides:
 recommends:
   Math::BigInt::GMP: 0
 requires:
-  Bio::Root::Version: 1.006923
+  Bio::Root::Version: 1.006922
   DateTime: 0
   Getopt::Euclid: v0.4.3
   Hash::Util: 0
@@ -99,4 +99,4 @@ resources:
   homepage: http://www.bioperl.org
   license: http://dev.perl.org/licenses/
   repository: git://github.com/bioperl/Bio-Community.git
-version: 0.001000
+version: 0.001001
