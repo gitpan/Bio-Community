@@ -51,7 +51,7 @@
    "provides" : {
       "Bio::Community" : {
          "file" : "lib/Bio/Community.pm",
-         "version" : "0.001001"
+         "version" : "0.001002"
       },
       "Bio::Community::Alpha" : {
          "file" : "lib/Bio/Community/Alpha.pm"
@@ -154,5 +154,5 @@
          "url" : "git://github.com/bioperl/Bio-Community.git"
       }
    },
-   "version" : "0.001001"
+   "version" : "0.001002"
 }
