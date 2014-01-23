@@ -2,7 +2,7 @@
 #
 # Please direct questions and support issues to <bioperl-l@bioperl.org>
 #
-# Copyright Florent Angly <florent.angly@gmail.com>
+# Copyright 2011-2014 Florent Angly <florent.angly@gmail.com>
 #
 # You may distribute this module under the same terms as perl itself
 
@@ -46,7 +46,7 @@ L<https://redmine.open-bio.org/projects/bioperl/>
 
 =head1 COPYRIGHT
 
-Copyright 2011,2012,2013 by the BioPerl Team L<bioperl-l@bioperl.org>
+Copyright 2011-2014 by Florent Angly <florent.angly@gmail.com>
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.10.1 or,
@@ -136,12 +136,13 @@ has community => (
             * camargo    : Camargo's eveness. Ranges from 0 to 1.
 
            Indices (accounting for species abundance):
-            * shannon  : Shannon-Wiener index C<H>. Emphasizes richness. Ranges
+            * shannon  : Shannon-Wiener index C<H>. Emphasizes richness and ranges
                          from 0 to infinity.
-            * simpson  : Simpson's Index of Diversity C<1-D>, where C<D> is
-                         Simpson's dominance index. C<1-D> is the probability
-                         that two individuals taken randomly are not from the
-                         same species. Emphasizes evenness. Ranges from 0 to 1.
+            * simpson  : Simpson's Index of Diversity C<1-D> (or Gini-Simpson
+                         index), where C<D> is Simpson's dominance index. C<1-D>
+                         is the probability that two individuals taken randomly
+                         are not from the same species. Emphasizes evenness and
+                         anges from 0 to 1.
             * simpson_r: Simpson's Reciprocal Index C<1/D>. Ranges from 1 to
                          infinity.
             * brillouin: Brillouin's index, appropriate for small, completely

@@ -5,9 +5,9 @@ author:
 build_requires:
   Test::Number::Delta: 0
 configure_requires:
-  Module::Build: 0.40
+  Module::Build: 0.42
 dynamic_config: 1
-generated_by: 'Module::Build version 0.4008, CPAN::Meta::Converter version 2.132830'
+generated_by: 'Module::Build version 0.4204, CPAN::Meta::Converter version 2.133380'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -16,7 +16,7 @@ name: Bio-Community
 provides:
   Bio::Community:
     file: lib/Bio/Community.pm
-    version: 0.001002
+    version: 0.001003
   Bio::Community::Alpha:
     file: lib/Bio/Community/Alpha.pm
   Bio::Community::IO:
@@ -99,4 +99,4 @@ resources:
   homepage: http://www.bioperl.org
   license: http://dev.perl.org/licenses/
   repository: git://github.com/bioperl/Bio-Community.git
-version: 0.001002
+version: 0.001003

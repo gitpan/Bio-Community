@@ -2,14 +2,14 @@
 #
 # Please direct questions and support issues to <bioperl-l@bioperl.org>
 #
-# Copyright Florent Angly <florent.angly@gmail.com>
+# Copyright 2011-2014 Florent Angly <florent.angly@gmail.com>
 #
 # You may distribute this module under the same terms as perl itself
 
 
 =head1 NAME
 
-Bio::Community::Meta::Beta - Beta-diversity or distance separating communities
+Bio::Community::Meta::Beta - Beta diversity or distance separating communities
 
 =head1 SYNOPSIS
 
@@ -37,14 +37,14 @@ The more different communities are, the larger their beta diversity. Often,
 beta diversity metrics are actually a distance measurement.
 
 Several types of beta diversity metrics are available: 1-norm, 2-norm (euclidean),
-and infinity-norm. They consider the communities as a n-dimensional space, where
-n is the total number of unique members across the communities.
+and infinity-norm, Hellinger distance, Bray-Curtis dissimilarity, Jaccard
+distance, Sørensen dissimilarity and MaxiPhi index.
 
 Since the relative abundance of community members is not always proportional to
 member counts (see weights() in Bio::Community::Member and use_weights() in
 Bio::Community), the beta diversity measured here are always based on relative
 abundance (as a fractional number between 0 and 1, not as a percentage), even
-for beta-diversity metrics that are usually based on number of observations
+for beta diversity metrics that are usually based on number of observations
 (counts).
 
 =head1 AUTHOR
@@ -66,7 +66,7 @@ L<https://redmine.open-bio.org/projects/bioperl/>
 
 =head1 COPYRIGHT
 
-Copyright 2011,2012,2013 by the BioPerl Team L<bioperl-l@bioperl.org>
+Copyright 2011-2014 by Florent Angly <florent.angly@gmail.com>
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.10.1 or,
@@ -124,27 +124,43 @@ has metacommunity => (
 
 =head2 type
 
- Function: Get or set the beta-diversity metric to calculate.
+ Function: Get or set the beta diversity metric to calculate.
  Usage   : my $type = $beta->type;
- Args    : String for the desired type of beta diversity
-            * 1-norm: the 1-norm distance
-            * 2-norm (or euclidean): the euclidean distance
-            * infinity-norm: the infinity-norm distance
-            * hellinger: like the euclidean distance, but constrained between 0
-                and 1
-            * bray-curtis: the Bray-Curtis dissimilarity index, between 0 and 1
+ Args    : String for the desired type of beta diversity.
+
+           Qualitative (presence/absence):
+            * jaccard: the Jaccard distance (between 0 and 1), i.e. the
+                fraction of non-shared species relative to the overall richness
+                of the metacommunity.
+            * sorensen: the Sørensen dissimilarity, or Whittaker's species
+                turnover (between 0 and 1), i.e. the fraction of non-shared
+                species relative to the average richness in the metacommunity.
             * shared: percentage of species shared (between 0 and 100), relative
                 to the least rich community. Note: this is the opposite
-                of a beta-diversity measure: the higher the percent of 
-                species shared, the smaller the beta-diversity.
-            * permuted: a beta-diversity measure between 0 and 100, representing
+                of a beta diversity measure since the higher the percent of
+                species shared, the smaller the beta diversity.
+
+           Quantitative:
+            * 1-norm: the 1-norm, or Manhattan distance, i.e. the sum of
+                 difference in abundance for all species.
+            * 2-norm (euclidean): the 2-norm, or euclidean distance.
+            * infinity-norm: the infinity-norm, i.e. the maximum difference in
+                 abundance over all species.
+            * hellinger: like the euclidean distance, but constrained between 0
+                and 1.
+            * bray-curtis: the Bray-Curtis dissimilarity (or Sørensen
+                quantitative index), which varies between 0 and 1.
+            * morisita-horn: the Morisita-Horn dissimilarity, which varies
+                between 0 and 1. Affected strongly by the abundance of the most
+                abundant species, but not by sample size or richness.
+            * permuted: a beta diversity measure between 0 and 100, representing
                 the percentage of the dominant species in the first community
                 with a permuted abundance rank in the second community. As a
                 special case, when no species are shared (and the percentage
                 permuted is meaningless), undef is returned.
-            * maxiphi: a beta-diversity measure between 0 and 1, based on the 
+            * maxiphi: a beta diversity measure between 0 and 1, based on the 
                 percentage of species shared and the percentage of top species
-                permuted (that have had a change in abundance rank)
+                permuted (that have had a change in abundance rank).
 
  Returns : String for the desired type of beta diversity
 
@@ -162,7 +178,7 @@ has type => (
 
 =head2 get_beta
 
- Function: Calculate the beta-diversity between two communities. The input
+ Function: Calculate the beta diversity between two communities. The input
            metacommunity should contain exactly two communities. The distance is
            calculated based on the relative abundance (in %) of the members (not
            their counts).
@@ -186,32 +202,10 @@ method _get_pairwise_beta ($meta) {
       $self->throw("Cannot calculate pairwise beta diversity because the ".
          "metacommunity contains $num_comm communities. Expected exactly two.");
    }
-   my $type = $self->type;
-   my $val;
-   if ($type eq '1-norm') {
-      $val = $self->_pnorm($meta, 1);
-   } elsif ( ($type eq '2-norm') || ($type eq 'euclidean') ) {
-      $val = $self->_pnorm($meta, 2);
-   } elsif ($type eq 'infinity-norm') {
-      $val = $self->_infnorm($meta);
-   } elsif ($type eq 'hellinger') {
-      $val = $self->_hellinger($meta);
-   } elsif ($type eq 'bray-curtis') {
-      $val = $self->_braycurtis($meta);
-   } elsif ($type eq 'shared') {
-      $val = $self->_shared($meta);
-   } elsif ($type eq 'permuted') {
-      $val = $self->_permuted($meta);
-   } elsif ($type eq 'maxiphi') {
-      $val = $self->_maxiphi($meta);
-   } elsif ($type eq 'unifrac') {
-      my $tree;
-      $val = $self->_unifrac($meta);
-   } else {
-      $self->throw("Invalid beta diversity type '$type'.");
-   }
-   return $val;
-}
+   my $metric = '_'.$self->type;
+   $metric =~ s/-/_/g;
+   return $self->$metric($meta);
+};
 
 
 =head2 get_all_beta
@@ -259,7 +253,7 @@ method get_all_beta () {
 }
 
 
-method _pnorm ($meta, $power) {
+method _p_norm ($meta, $power) {
    # Calculate the p-norm. If power is 1, this is the 1-norm. If power is 2,
    # this is the 2-norm (a.k.a. euclidean distance).
    my ($community1, $community2) = @{$meta->get_all_communities};
@@ -274,7 +268,23 @@ method _pnorm ($meta, $power) {
 }
 
 
-method _infnorm ($meta) {
+method _1_norm ($meta) {
+   # Calculate the 1-norm
+   return $self->_p_norm($meta, 1);
+}
+
+
+method _2_norm ($meta) {
+   # Calculate the 2-norm
+   return $self->_p_norm($meta, 2);
+}
+
+
+# The euclidean distance is the same as the 2-norm
+*_euclidean = \&_2_norm;
+
+
+method _infinity_norm ($meta) {
    # Calculate the infinity-norm.
    my ($community1, $community2) = @{$meta->get_all_communities};
    my $val = 0;
@@ -292,11 +302,11 @@ method _infnorm ($meta) {
 
 method _hellinger ($meta) {
    # Calculate the Hellinger distance.
-   return $self->_pnorm($meta, 2) / sqrt(2);
+   return $self->_p_norm($meta, 2) / sqrt(2);
 }
 
 
-method _braycurtis ($meta) {
+method _bray_curtis ($meta) {
    # Calculate the Bray-Curtis dissimilarity index BC:
    #    BC = 1 - sum( min(r_i, r_j) )
    # where r_i and r_j are the relative abundance (fractional) for species in
@@ -314,6 +324,69 @@ method _braycurtis ($meta) {
       $sumdiff += min($abundance1, $abundance2);
    }
    return 1 - $sumdiff;
+}
+
+
+method _morisita_horn ($meta) {
+   # Calculate the Morisita-Horn dissimilarity MH:
+   #    MH = 1- Cmh
+   # where:
+   #    CmH = 1 - 2 sum(ani * bni) / [(da + db)(aN)(bN)]
+   #    aN = total # of indiv in site A
+   #    ani = # of individuals in ith species in site A
+   #    da = sum(ani^2) / aN^2
+   my ($community1, $community2) = @{$meta->get_all_communities};
+   my ($aN, $bN) = (1, 1);
+   my ($sumprod, $da, $db) = (0, 0);
+   for my $member (@{$meta->get_all_members}) {
+      my $ani = $community1->get_rel_ab($member) / 100;
+      my $bni = $community2->get_rel_ab($member) / 100;
+      $sumprod += $ani * $bni;
+      $da += $ani**2;
+      $db += $bni**2;
+   }
+   #$da /= $aN;
+   #$db /= $bN;
+   print "sumprod: $sumprod\n";
+   print "da     : $da\n";
+   print "db     : $db\n";
+   return 1 - 2 * $sumprod / (($da + $db) * $aN * $bN);
+}
+
+
+method _jaccard ($meta) {
+   # Calculate the Jaccard distance dJ:
+   #    dJ = 1 - (#spp in common / total richness)
+   my ($community1, $community2) = @{$meta->get_all_communities};
+   my ($num_shared, $num_total) = (0, 0);
+   for my $member (@{$meta->get_all_members}) {
+      my $ab1 = $community1->get_rel_ab($member);
+      my $ab2 = $community2->get_rel_ab($member);
+      if ( ($ab1 > 0) || ($ab2 > 0) ) {
+         $num_total++;
+         if ( ($ab1 > 0) && ($ab2 > 0) ) {
+            $num_shared++;
+         }
+      }
+   }
+   return ($num_total > 0) ? (1 - $num_shared / $num_total) : 1;
+}
+
+
+method _sorensen ($meta) {
+   # Calculate the Sørensen dissimilarity dS:
+   #    dS = 1 - (#spp in common / average richness)
+   #       = 1 - 2* #spp in common / (richness A + richness B)
+   my ($community1, $community2) = @{$meta->get_all_communities};
+   my $num_shared = 0;
+   for my $member (@{$meta->get_all_members}) {
+      if ( ($community1->get_rel_ab($member) > 0) &&
+           ($community2->get_rel_ab($member) > 0) ) {
+         $num_shared++;
+      }
+   }
+   my $richness_sum = $community1->get_richness + $community2->get_richness;
+   return ($richness_sum > 0) ? 1 - (2 * $num_shared / $richness_sum) : 1;
 }
 
 
@@ -448,7 +521,6 @@ method _unifrac ($meta, $tree) {
 # TODO:
 # Many more beta diversity indices to calculate:
 #    Unifrac
-#    Jaccard
 #    ...
 #######
 

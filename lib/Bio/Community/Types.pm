@@ -2,18 +2,18 @@
 #
 # Please direct questions and support issues to <bioperl-l@bioperl.org>
 #
-# Copyright Florent Angly <florent.angly@gmail.com>
+# Copyright 2011-2014 Florent Angly <florent.angly@gmail.com>
 #
 # You may distribute this module under the same terms as perl itself
 
 
 =head1 NAME
 
-Bio::Community::Types - Data types
+Bio::Community::Types - Data type definitions
 
 =head1 DESCRIPTION
 
-This module defineds of useful data types for use in modules that use Moose.
+This module defines useful data types for use in Moose-based modules.
 
 =head1 AUTHOR
 
@@ -34,7 +34,7 @@ L<https://redmine.open-bio.org/projects/bioperl/>
 
 =head1 COPYRIGHT
 
-Copyright 2011,2012,2013 by the BioPerl Team L<bioperl-l@bioperl.org>
+Copyright 2011-2014 by Florent Angly <florent.angly@gmail.com>
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.10.1 or,
@@ -103,7 +103,8 @@ subtype 'AbundanceRank'
 
 # Type of distance
 my @DistanceType = qw(1-norm 2-norm euclidean p-norm infinity-norm hellinger
-                       bray-curtis shared permuted maxiphi unifrac);
+                      bray-curtis morisita-horn jaccard sorensen
+                      shared permuted maxiphi unifrac);
 subtype 'DistanceType'
    => as enum( \@DistanceType )
    => message { _gen_err_msg(\@DistanceType, $_) };

@@ -4,7 +4,7 @@
       "BioPerl Team <bioperl-l@bioperl.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4008, CPAN::Meta::Converter version 2.132830",
+   "generated_by" : "Module::Build version 0.4204",
    "license" : [
       "perl_5"
    ],
@@ -21,7 +21,7 @@
       },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.40"
+            "Module::Build" : "0.42"
          }
       },
       "runtime" : {
@@ -51,7 +51,7 @@
    "provides" : {
       "Bio::Community" : {
          "file" : "lib/Bio/Community.pm",
-         "version" : "0.001002"
+         "version" : "0.001003"
       },
       "Bio::Community::Alpha" : {
          "file" : "lib/Bio/Community/Alpha.pm"
@@ -154,5 +154,5 @@
          "url" : "git://github.com/bioperl/Bio-Community.git"
       }
    },
-   "version" : "0.001002"
+   "version" : "0.001003"
 }
