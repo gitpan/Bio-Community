@@ -30,14 +30,18 @@ lib/Bio/Community/Tools/ShrapnelCleaner.pm
 lib/Bio/Community/Tools/Summarizer.pm
 lib/Bio/Community/Tools/Transformer.pm
 lib/Bio/Community/Types.pm
+LICENSE
 MANIFEST			This list of files
+META.json
+META.yml
 README
 scripts/bc_clean_shrapnel
 scripts/bc_convert_files
 scripts/bc_correct_misassignments
 scripts/bc_get_info
 scripts/bc_manage_samples
-scripts/bc_measure_distance
+scripts/bc_measure_alpha
+scripts/bc_measure_beta
 scripts/bc_rarefy
 scripts/bc_relative_to_absolute
 scripts/bc_remove_unexpected_members
@@ -112,6 +116,3 @@ t/Tools/ShrapnelCleaner.t
 t/Tools/Summarizer.t
 t/Tools/Transformer.t
 xt/pod-coverage.t
-LICENSE
-META.yml
-META.json

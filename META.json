@@ -26,7 +26,7 @@
       },
       "runtime" : {
          "recommends" : {
-            "Math::BigInt::GMP" : "0"
+            "Math::GSL::SF" : "0"
          },
          "requires" : {
             "Bio::Root::Version" : "1.006922",
@@ -51,7 +51,7 @@
    "provides" : {
       "Bio::Community" : {
          "file" : "lib/Bio/Community.pm",
-         "version" : "0.001003"
+         "version" : "0.001004"
       },
       "Bio::Community::Alpha" : {
          "file" : "lib/Bio/Community/Alpha.pm"
@@ -154,5 +154,5 @@
          "url" : "git://github.com/bioperl/Bio-Community.git"
       }
    },
-   "version" : "0.001003"
+   "version" : "0.001004"
 }
