@@ -1,4 +1,4 @@
-# BioPerl module for Bio::Community::Tools::RepresentativeIdConverter
+# BioPerl module for Bio::Community::Tools::IdConverter
 #
 # Please direct questions and support issues to <bioperl-l@bioperl.org>
 #
@@ -9,23 +9,37 @@
 
 =head1 NAME
 
-Bio::Community::Tools::RepresentativeIdConverter - Convert member ID to OTU representative ID or taxonomic ID
+Bio::Community::Tools::IdConverter - Various methods to convert member ID
 
 =head1 SYNOPSIS
 
-  use Bio::Community::Tools::RepresentativeIdConverter;
+  use Bio::Community::Tools::IdConverter;
 
+  # Based on member description
   my $converter = Bio::Community::Tools::Summarizer->new(
      -metacommunity => $meta,
-     -cluster_file  => 'gg_99_otu_map.txt',
+     -member_attr   => 'desc',
   );
   my $meta_by_otu = $converter->get_converted_meta;
 
+  # Based on IDs given in a file
+  $converter = Bio::Community::Tools::Summarizer->new(
+     -metacommunity => $meta,
+     -cluster_file  => 'gg_99_otu_map.txt',
+  );
+  $meta_by_otu = $converter->get_converted_meta;
+
 =head1 DESCRIPTION
 
-Given a metacommunity and an OTU cluster map file (or taxonomic assignment file),
-replace the ID of every member by that of its OTU cluster (or taxonomic)
-representative and add it in a new metacommunity.
+Convert the ID of members given in a metacommunity based on another member
+attribute, such as its description, or based on IDs provided in a file.
+This file can be a Greengenes OTU cluster file, a BLAST file, or a QIIME
+taxonomic assignment file. A new metacommunity containing members with
+converted IDs is returned.
+
+Note that when given a files, this script expects high-quality results. No
+quality processing is done and only the first match assigned to a member is
+kept.
 
 =head1 AUTHOR
 
@@ -59,26 +73,38 @@ methods. Internal methods are usually preceded with a _
 
 =head2 new
 
- Function: Create a new Bio::Community::Tool::RepresentativeIdConverter object
- Usage   : my $converter = Bio::Community::Tool::RepresentativeIdConverter->new(
+ Function: Create a new Bio::Community::Tool::IdConverter object
+ Usage   : my $converter = Bio::Community::Tool::IdConverter->new(
+              -metacommunity => $meta,
+              -member_attr   => 'desc',
+           );
+           # or
+           my $converter = Bio::Community::Tool::IdConverter->new(
               -metacommunity => $meta,
               -cluster_file  => '99_otu_map.txt',
            );
            # or
-           my $converter = Bio::Community::Tool::RepresentativeIdConverter->new(
+           my $converter = Bio::Community::Tool::IdConverter->new(
+              -metacommunity => $meta,
+              -blast_file    => 'blast_res.tab',
+           );
+           # or
+           my $converter = Bio::Community::Tool::IdConverter->new(
               -metacommunity  => $meta,
               -taxassign_file => 'rep_set_tax_assignments.txt',
            );
  Args    : -metacommunity  : See metacommunity().
+           And ones of:
+           -member_attr    : See member_attr().
            -cluster_file   : See cluster_file().
+           -blast_file     : See blast_file().
            -taxassign_file : See taxassign_file().
-           Use either -cluster_file or -taxassign_file
- Returns : a Bio::Community::Tools::RepresentativeIdConverter object
+ Returns : a Bio::Community::Tools::IdConverter object
 
 =cut
 
 
-package Bio::Community::Tools::RepresentativeIdConverter;
+package Bio::Community::Tools::IdConverter;
 
 use Moose;
 use MooseX::NonMoose;
@@ -105,9 +131,32 @@ has metacommunity => (
    is => 'rw',
    isa => 'Bio::Community::Meta',
    required => 0,
-   lazy => 1,
-   default => undef,
+   #lazy => 1,
+   #default => undef,
    init_arg => '-metacommunity',
+);
+
+
+=head2 member_attr
+
+ Function: Get / set whether member ID should be replaced by the value of another
+           attribute, e.g. the member's description. Replacing a member's ID
+           by its description is useful when importing data from formats that do
+           not explicitly represent member ID, e.g. from 'generic' to 'qiime'.
+ Usage   : $summarizer->member_attr('id');
+ Args    : member attribute, e.g. 'desc' (see C<Bio::Community::Member>)
+ Returns : member attribute
+
+=cut
+
+has member_attr => (
+   is => 'rw',
+   isa => 'Maybe[Str]',
+   required => 0,
+   #lazy => 1,
+   #default => undef,
+   init_arg => '-member_attr',
+   predicate => '_has_member_attr',
 );
 
 
@@ -134,10 +183,38 @@ has metacommunity => (
 has cluster_file => (
    is => 'rw',
    isa => 'Maybe[Str]',
-   required => 1,
-   lazy => 1,
-   default => undef,
+   required => 0,
+   #lazy => 1,
+   #default => undef,
    init_arg => '-cluster_file',
+   predicate => '_has_cluster_file',
+);
+
+
+=head2 blast_file
+
+ Function: Get / set the tab-delimited BLAST file that defines the best
+           similarity. This type of file generally has 12 columns and the first
+           two should be the member ID and the ID of sequence with the best
+           similarity. For example:
+
+           OTU_4   JN647692.1.1869 99.6    250     1       0       1       250     1       250     *       *
+           OTU_12  655879  94.4    250     14      0       1       250     1       250     *       *
+
+ Usage   : $summarizer->blast_file('blastn_res.tab');
+ Args    : BLAST file name
+ Returns : BLAST file name
+
+=cut
+
+has blast_file => (
+   is => 'rw',
+   isa => 'Maybe[Str]',
+   required => 0,
+   #lazy => 1,
+   #default => undef,
+   init_arg => '-blast_file',
+   predicate => '_has_blast_file',
 );
 
 
@@ -162,10 +239,11 @@ has cluster_file => (
 has taxassign_file => (
    is => 'rw',
    isa => 'Maybe[Str]',
-   required => 1,
-   lazy => 1,
-   default => undef,
+   required => 0,
+   #lazy => 1,
+   #default => undef,
    init_arg => '-taxassign_file',
+   predicate => '_has_taxassign_file',
 );
 
 
@@ -179,22 +257,35 @@ has taxassign_file => (
 =cut
 
 method get_converted_meta () {
-
-   if ( (defined $self->cluster_file) && (defined $self->taxassign_file) ) {
-      $self->throw('Need to specify use either a cluster_file or a taxassign_file');
+   # Sanity checks
+   if ( $self->_has_member_attr + $self->_has_cluster_file + $self->_has_blast_file
+      + $self->_has_taxassign_file > 1) {
+      $self->throw('Specify only one of -member_attr, -cluster_file, -blast_file'.
+         ' or -taxassign_file');
    }
 
+   my $file = $self->cluster_file || $self->blast_file || $self->taxassign_file;
+   if ( not( $self->_has_member_attr || defined $file ) ) {
+      $self->throw("No -member_attr, -cluster file, -blast_file or -taxassign_file".
+         " was specified");
+   }
+
+   # Read file containing representative IDs
+   my ($id2repr, $attr);
+   if (defined $file) {
+      $id2repr = $self->_read_repr_file(
+         $file,
+         $self->_has_cluster_file ?
+            'cluster' :
+            ( $self->_has_blast_file ? 'blast' : 'taxo' ),
+      );
+   } else {
+      $attr = $self->member_attr;
+   }
+
+   # Process IDs
    my $meta = $self->metacommunity;
    my $meta2 = Bio::Community::Meta->new;
-
-   my $file = $self->cluster_file || $self->taxassign_file;
-   if (not defined $file) {
-      $self->throw("No cluster file or taxonomic assignment file was provided");
-   }
-   my $id2repr = $self->_read_repr_file(
-      $file,
-      defined $self->cluster_file ? 'cluster' : 'taxo',
-   );
 
    while (my $community = $meta->next_community) {
       my $name = $community->name;
@@ -206,11 +297,19 @@ method get_converted_meta () {
       while (my $member = $community->next_member) {
 
          my $id = $member->id;
-         my $count = $community->get_count($member);
-         my $repr_id = $id2repr->{$id};
+         my $repr_id;
+         if ($id2repr) {
+            # Use representative ID from file
+            $repr_id = $id2repr->{$id};
+         } else {
+            # Use ID from member attr
+            eval { $repr_id = $member->$attr };
+            if ($@) { $self->throw("Invalid member attribute '$attr'") }
+         }
 
          if (not defined $repr_id) {
-            $self->warn("Could not find representative sequence for member ID $id. Keeping original ID.\n");
+            $self->warn("Representative ID for member '$id' was not defined. ".
+               "Keeping original ID.");
             $repr_id = $id;
          }
 
@@ -221,7 +320,7 @@ method get_converted_meta () {
             $member2->id($repr_id);
          }
 
-         $community2->add_member( $member2, $count );
+         $community2->add_member( $member2, $community->get_count($member) );
 
       }
       $meta2->add_communities([$community2]);
@@ -237,6 +336,7 @@ method _read_repr_file ( $file, $type ) {
    my $col_off;
    my %id2repr;
    my $num_seqs;
+   my $warned = 0;
    open my $in, '<', $file or $self->throw("Could not read file '$file'\n$!");
    while (my $line = <$in>) {
       chomp $line;
@@ -244,19 +344,32 @@ method _read_repr_file ( $file, $type ) {
       my @elems = split "\t", $line;
       my ($repr_id, $seq_ids);
       if ($type eq 'cluster') {
-         shift @elems; # cluster ID
+         shift @elems; # remove cluster ID
          $repr_id = shift @elems;
          $seq_ids = \@elems;
          push @$seq_ids, $repr_id;
       } elsif ($type eq 'taxo') {
          $repr_id = $elems[3];
          $seq_ids = [ $elems[0] ];
+      } elsif ($type eq 'blast') {
+         # Default fields: qseqid sseqid pident length mismatchgapopen
+         #                 qstart qend sstart send evalue bitscore
+         $repr_id = $elems[1];
+         $seq_ids = [ $elems[0] ];
       } else {
          $self->throw("Internal error: Unexpected type '$type'");
       }
       for my $seq_id (@$seq_ids) {
-         $id2repr{$seq_id} = $repr_id;
-         $num_seqs++; # seq_id
+         if (exists $id2repr{$seq_id}) {
+            if (not $warned) {
+               $self->warn("Multiple entries found for $seq_id. Keeping only the first one.");
+               $warned = 1;
+            }
+         } else {
+            # only keep first match
+            $id2repr{$seq_id} = $repr_id;
+            $num_seqs++; # account for seq_id
+         }
       }
    }
    close $in;

@@ -23,8 +23,8 @@ lib/Bio/Community/Role/Sequenced.pm
 lib/Bio/Community/Role/Table.pm
 lib/Bio/Community/Role/Weighted.pm
 lib/Bio/Community/TaxonomyUtils.pm
+lib/Bio/Community/Tools/IdConverter.pm
 lib/Bio/Community/Tools/Rarefier.pm
-lib/Bio/Community/Tools/RepresentativeIdConverter.pm
 lib/Bio/Community/Tools/Sampler.pm
 lib/Bio/Community/Tools/ShrapnelCleaner.pm
 lib/Bio/Community/Tools/Summarizer.pm
@@ -35,8 +35,10 @@ MANIFEST			This list of files
 META.json
 META.yml
 README
+scripts/bc_add_taxonomy
 scripts/bc_clean_shrapnel
 scripts/bc_convert_files
+scripts/bc_convert_ids
 scripts/bc_correct_misassignments
 scripts/bc_get_info
 scripts/bc_manage_samples
@@ -46,7 +48,6 @@ scripts/bc_rarefy
 scripts/bc_relative_to_absolute
 scripts/bc_remove_unexpected_members
 scripts/bc_summarize
-scripts/bc_use_repr_id
 t/Alpha.t
 t/Community.t
 t/data/biom_dups.txt
@@ -55,6 +56,7 @@ t/data/biom_invalid.txt
 t/data/biom_minimal_dense.txt
 t/data/biom_no_spp.txt
 t/data/biom_rich_sparse.txt
+t/data/blast_tab_usearch.txt
 t/data/gaas_compo.txt
 t/data/gaas_other.txt
 t/data/gaas_seq_compo.txt
@@ -65,6 +67,7 @@ t/data/gg_99_otu_map.txt
 t/data/lorem_ipsum.txt
 t/data/qiime_alt_header.txt
 t/data/qiime_single_community.txt
+t/data/qiime_w_bc_ids.txt
 t/data/qiime_w_greengenes_taxo.txt
 t/data/qiime_w_missing.txt
 t/data/qiime_w_no_taxo.txt
@@ -109,8 +112,8 @@ t/Role/Table.t
 t/Role/TestLocked.pm
 t/Role/TestPRNG.pm
 t/Role/TestTable.pm
+t/Tools/IdConverter.t
 t/Tools/Rarefier.t
-t/Tools/RepresentativeIdConverter.t
 t/Tools/Sampler.t
 t/Tools/ShrapnelCleaner.t
 t/Tools/Summarizer.t

@@ -16,7 +16,7 @@ name: Bio-Community
 provides:
   Bio::Community:
     file: lib/Bio/Community.pm
-    version: 0.001004
+    version: 0.001005
   Bio::Community::Alpha:
     file: lib/Bio/Community/Alpha.pm
   Bio::Community::IO:
@@ -61,10 +61,10 @@ provides:
     file: lib/Bio/Community/Role/Weighted.pm
   Bio::Community::TaxonomyUtils:
     file: lib/Bio/Community/TaxonomyUtils.pm
+  Bio::Community::Tools::IdConverter:
+    file: lib/Bio/Community/Tools/IdConverter.pm
   Bio::Community::Tools::Rarefier:
     file: lib/Bio/Community/Tools/Rarefier.pm
-  Bio::Community::Tools::RepresentativeIdConverter:
-    file: lib/Bio/Community/Tools/RepresentativeIdConverter.pm
   Bio::Community::Tools::Sampler:
     file: lib/Bio/Community/Tools/Sampler.pm
   Bio::Community::Tools::ShrapnelCleaner:
@@ -89,7 +89,6 @@ requires:
   Moose: 0
   MooseX::NonMoose: 0
   MooseX::StrictConstructor: 0
-  Parallel::Iterator: 0
   PerlIO::eol: 0
   Scalar::Util: 0
   Tie::IxHash: 0
@@ -99,4 +98,4 @@ resources:
   homepage: http://www.bioperl.org
   license: http://dev.perl.org/licenses/
   repository: git://github.com/bioperl/Bio-Community.git
-version: 0.001004
+version: 0.001005
