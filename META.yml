@@ -3,99 +3,128 @@ abstract: 'Modules to represent and manipulate communities of biological organis
 author:
   - 'BioPerl Team <bioperl-l@bioperl.org>'
 build_requires:
-  Test::Number::Delta: 0
+  Test::Number::Delta: '0'
 configure_requires:
-  Module::Build: 0.42
+  Module::Build: '0.42'
 dynamic_config: 1
-generated_by: 'Module::Build version 0.4204, CPAN::Meta::Converter version 2.132830'
+generated_by: 'Module::Build version 0.4205, CPAN::Meta::Converter version 2.120351'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+  version: '1.4'
 name: Bio-Community
 provides:
   Bio::Community:
     file: lib/Bio/Community.pm
-    version: 0.001005
+    version: '0.001006'
   Bio::Community::Alpha:
     file: lib/Bio/Community/Alpha.pm
+    version: 0
   Bio::Community::IO:
     file: lib/Bio/Community/IO.pm
+    version: 0
   Bio::Community::IO::Driver::biom:
     file: lib/Bio/Community/IO/Driver/biom.pm
+    version: 0
   Bio::Community::IO::Driver::dummy:
     file: lib/Bio/Community/IO/Driver/dummy.pm
+    version: 0
   Bio::Community::IO::Driver::gaas:
     file: lib/Bio/Community/IO/Driver/gaas.pm
+    version: 0
   Bio::Community::IO::Driver::generic:
     file: lib/Bio/Community/IO/Driver/generic.pm
+    version: 0
   Bio::Community::IO::Driver::qiime:
     file: lib/Bio/Community/IO/Driver/qiime.pm
+    version: 0
   Bio::Community::IO::Driver::unifrac:
     file: lib/Bio/Community/IO/Driver/unifrac.pm
+    version: 0
   Bio::Community::IO::FormatGuesser:
     file: lib/Bio/Community/IO/FormatGuesser.pm
+    version: 0
   Bio::Community::Member:
     file: lib/Bio/Community/Member.pm
+    version: 0
   Bio::Community::Meta:
     file: lib/Bio/Community/Meta.pm
+    version: 0
   Bio::Community::Meta::Beta:
     file: lib/Bio/Community/Meta/Beta.pm
+    version: 0
   Bio::Community::Meta::Gamma:
     file: lib/Bio/Community/Meta/Gamma.pm
+    version: 0
   Bio::Community::Role::Classified:
     file: lib/Bio/Community/Role/Classified.pm
+    version: 0
   Bio::Community::Role::Described:
     file: lib/Bio/Community/Role/Described.pm
+    version: 0
   Bio::Community::Role::IO:
     file: lib/Bio/Community/Role/IO.pm
+    version: 0
   Bio::Community::Role::Locked:
     file: lib/Bio/Community/Role/Locked.pm
+    version: 0
   Bio::Community::Role::PRNG:
     file: lib/Bio/Community/Role/PRNG.pm
+    version: 0
   Bio::Community::Role::Sequenced:
     file: lib/Bio/Community/Role/Sequenced.pm
+    version: 0
   Bio::Community::Role::Table:
     file: lib/Bio/Community/Role/Table.pm
+    version: 0
   Bio::Community::Role::Weighted:
     file: lib/Bio/Community/Role/Weighted.pm
+    version: 0
   Bio::Community::TaxonomyUtils:
     file: lib/Bio/Community/TaxonomyUtils.pm
+    version: 0
   Bio::Community::Tools::IdConverter:
     file: lib/Bio/Community/Tools/IdConverter.pm
+    version: 0
   Bio::Community::Tools::Rarefier:
     file: lib/Bio/Community/Tools/Rarefier.pm
+    version: 0
   Bio::Community::Tools::Sampler:
     file: lib/Bio/Community/Tools/Sampler.pm
+    version: 0
   Bio::Community::Tools::ShrapnelCleaner:
     file: lib/Bio/Community/Tools/ShrapnelCleaner.pm
+    version: 0
   Bio::Community::Tools::Summarizer:
     file: lib/Bio/Community/Tools/Summarizer.pm
+    version: 0
   Bio::Community::Tools::Transformer:
     file: lib/Bio/Community/Tools/Transformer.pm
+    version: 0
   Bio::Community::Types:
     file: lib/Bio/Community/Types.pm
+    version: 0
 recommends:
-  Math::GSL::SF: 0
+  Math::GSL::SF: '0'
 requires:
-  Bio::Root::Version: 1.006922
-  DateTime: 0
+  Bio::Root::Version: '1.006922'
+  DateTime: '0'
   Getopt::Euclid: v0.4.3
-  Hash::Util: 0
-  JSON::XS: 0
-  Math::Random::MT: 0
-  Method::Signatures: 0
-  Module::Runtime: 0
-  Moose: 0
-  MooseX::NonMoose: 0
-  MooseX::StrictConstructor: 0
-  PerlIO::eol: 0
-  Scalar::Util: 0
-  Tie::IxHash: 0
+  Hash::Util: '0'
+  JSON::XS: '0'
+  Math::Random::MT: '0'
+  Method::Signatures: '0'
+  Module::Runtime: '0'
+  Moose: '0'
+  MooseX::NonMoose: '0'
+  MooseX::StrictConstructor: '0'
+  PerlIO::eol: '0'
+  Scalar::Util: '0'
+  Tie::IxHash: '0'
   perl: v5.10.0
 resources:
   bugtracker: https://redmine.open-bio.org/projects/bioperl/
   homepage: http://www.bioperl.org
   license: http://dev.perl.org/licenses/
   repository: git://github.com/bioperl/Bio-Community.git
-version: 0.001005
+version: '0.001006'
