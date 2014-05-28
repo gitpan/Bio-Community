@@ -15,11 +15,13 @@ Bio::Community::Tools::Sampler - Sample organisms according to their abundance
 
   use Bio::Community::Tools::Sampler;
 
-  # get a community somehow...
-
-  my $sampler = Bio::Community::Tools::Sampler->new( -community => $community );
+  # Sample members from a reference community 
+  my $sampler = Bio::Community::Tools::Sampler->new( -community => $ref_community );
   my $member1 = $sampler->get_rand_member();
   my $member2 = $sampler->get_rand_member();
+
+  # Or sample 100 members in one step
+  my $rand_community = $sampler->get_rand_community( 100 );
 
 =head1 DESCRIPTION
 
@@ -85,7 +87,7 @@ with 'Bio::Community::Role::PRNG';
 
 =head2 community
 
- Function: Get or set the community to sample from
+ Function: Get or set the community to sample from.
  Usage   : my $community = $sampler->community();
  Args    : a Bio::Community object
  Returns : a Bio::Community object
@@ -93,11 +95,12 @@ with 'Bio::Community::Role::PRNG';
 =cut
 
 has community => (
-   is => 'ro',
+   is => 'rw',
    isa => 'Bio::Community',
-   required => 1,
+   required => 0,
    lazy => 0,
    init_arg => '-community',
+   trigger => \&_clear_cdf,
 );
 
 
@@ -107,6 +110,7 @@ has _cdf => (
    lazy => 1,
    default => sub { shift->_init_cdf( ) },
    init_arg => undef,
+   clearer => '_clear_cdf',
 );
 
 
@@ -155,12 +159,12 @@ method get_rand_member () {
 
  Function: Create a community from random members of a community
  Usage   : my $community = $sampler->get_rand_community(1000);
- Args    : Number of members (strictly positive integer)
+ Args    : Number of members (positive integer)
  Returns : A Bio::Community object
 
 =cut
 
-method get_rand_community ( StrictlyPositiveInt $total_count = 1 ) {
+method get_rand_community ( PositiveInt $total_count = 1 ) {
    # Adding random members 1 by 1 in a communty is slow. Generate all the members
    # first. Then add them all at once to a community.
 
@@ -189,7 +193,7 @@ method _init_cdf () {
    # Sort the members of the community by decreasing rank and calculate the
    # cumulative density function of their relative abundance. Store the
    # resulting CDF and members;
-   my $community = $self->community;
+   my $community = $self->community || $self->throw('No community was provided');
 
    my @cdf;
    my @members = ();

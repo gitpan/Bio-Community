@@ -23,6 +23,7 @@ lib/Bio/Community/Role/Sequenced.pm
 lib/Bio/Community/Role/Table.pm
 lib/Bio/Community/Role/Weighted.pm
 lib/Bio/Community/TaxonomyUtils.pm
+lib/Bio/Community/Tools/Accumulator.pm
 lib/Bio/Community/Tools/IdConverter.pm
 lib/Bio/Community/Tools/Rarefier.pm
 lib/Bio/Community/Tools/Sampler.pm
@@ -35,6 +36,7 @@ MANIFEST			This list of files
 META.json
 META.yml
 README
+scripts/bc_accumulate
 scripts/bc_add_taxonomy
 scripts/bc_clean_shrapnel
 scripts/bc_convert_files
@@ -113,6 +115,7 @@ t/Role/Table.t
 t/Role/TestLocked.pm
 t/Role/TestPRNG.pm
 t/Role/TestTable.pm
+t/Tools/Accumulator.t
 t/Tools/IdConverter.t
 t/Tools/Rarefier.t
 t/Tools/Sampler.t

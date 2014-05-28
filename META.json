@@ -4,7 +4,7 @@
       "BioPerl Team <bioperl-l@bioperl.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4205",
+   "generated_by" : "Module::Build version 0.4204",
    "license" : [
       "perl_5"
    ],
@@ -50,7 +50,7 @@
    "provides" : {
       "Bio::Community" : {
          "file" : "lib/Bio/Community.pm",
-         "version" : "0.001006"
+         "version" : "0.001007"
       },
       "Bio::Community::Alpha" : {
          "file" : "lib/Bio/Community/Alpha.pm"
@@ -118,6 +118,9 @@
       "Bio::Community::TaxonomyUtils" : {
          "file" : "lib/Bio/Community/TaxonomyUtils.pm"
       },
+      "Bio::Community::Tools::Accumulator" : {
+         "file" : "lib/Bio/Community/Tools/Accumulator.pm"
+      },
       "Bio::Community::Tools::IdConverter" : {
          "file" : "lib/Bio/Community/Tools/IdConverter.pm"
       },
@@ -153,5 +156,5 @@
          "url" : "git://github.com/bioperl/Bio-Community.git"
       }
    },
-   "version" : "0.001006"
+   "version" : "0.001007"
 }

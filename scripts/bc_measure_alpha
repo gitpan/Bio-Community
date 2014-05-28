@@ -25,7 +25,7 @@ bc_measure_alpha - Measure alpha diversity of communities
 =head1 SYNOPSIS
 
   bc_measure_alpha -input_files   communities.generic      \
-                   -alpha_type    'chao1'                  \
+                   -alpha_type    chao1                    \
                    -output_prefix community_alpha
 
 =head1 DESCRIPTION
@@ -33,8 +33,7 @@ bc_measure_alpha - Measure alpha diversity of communities
 This script reads files containing biological communities and calculates their
 alpha diversity. The output is a tab-delimited file containing the alpha
 diversity for each community, with the community names in the first column, and
-their alpha diversity in the second.
-Note that some beta diversity metrics are
+their alpha diversity in the second. Note that some alpha diversity metrics are
 based on relative abundances, and may thus be affected by the weights you provide.
 
 =head1 REQUIRED ARGUMENTS
@@ -56,7 +55,7 @@ provide multiple input files.
 
 =over
 
-=item -at <alpha_type>... | -alpha_type <alpha_type>...
+=item -at <alpha_types>... | -alpha_types <alpha_types>...
 
 The types of alpha diversity metric to calculate:
 
@@ -69,11 +68,11 @@ brillouin_e, hill_e, mcintosh_e, camargo
 
 * Dominance metrics: simpson_d, berger
 
-See L<Bio::Community::Alpha> for details about these metrics. Default: alpha_type.default
+See L<Bio::Community::Alpha> for details about these metrics. Default: alpha_types.default
 
 =for Euclid:
-   alpha_type.type: string
-   alpha_type.default: ['observed']
+   alpha_types.type: string
+   alpha_types.default: ['observed']
 
 =item -wf <weight_files>... | -weight_files <weight_files>...
 
@@ -149,7 +148,7 @@ Email florent.angly@gmail.com
 =cut
 
 
-calc_alpha( $ARGV{'input_files'}  , $ARGV{'alpha_type'}   , $ARGV{'weight_files'},
+calc_alpha( $ARGV{'input_files'}  , $ARGV{'alpha_types'}  , $ARGV{'weight_files'},
             $ARGV{'weight_assign'}, $ARGV{'output_prefix'},                       );
 exit;
 

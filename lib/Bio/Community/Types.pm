@@ -83,6 +83,13 @@ subtype 'Count'
    => as 'PositiveNum';
 
 
+# Number of ticks (at least three)
+subtype 'NumTicks'
+   => as 'PositiveNum'
+   => where { $_ > 2 }
+   => message { _gen_err_msg('an integer greater than two', $_) };
+
+
 # Sort numerically
 subtype 'NumericSort'
    => as enum( [ qw(-1 0 1) ] )
@@ -137,6 +144,20 @@ my @TransformationType = qw(identity binary relative hellinger chord);
 subtype 'TransformationType'
    => as enum( \@TransformationType )
    => message { _gen_err_msg(\@TransformationType, $_) };
+
+
+# Type of accumulation curve
+my @AccumulationType = qw(rarefaction collector);
+subtype 'AccumulationType'
+   => as enum( \@AccumulationType )
+   => message { _gen_err_msg(\@AccumulationType, $_) };
+
+
+# Type of spacing
+my @SpacingType = qw(linear logarithmic);
+subtype 'SpacingType'
+   => as enum( \@SpacingType )
+   => message { _gen_err_msg(\@SpacingType, $_) };
 
 
 # Members identification method
